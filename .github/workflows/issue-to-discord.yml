@@ -16,4 +16,4 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER)\\n$ISSUE_URL\"}" $DISCORD_URL
+          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER) - $ISSUE_URL\"}" $DISCORD_URL
