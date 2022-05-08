@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Push issue to Discord
         env:
-          DISCORD_URL: ${{ secrets.BOT_TESTBED_URL }}
+          DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
