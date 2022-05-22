@@ -24,7 +24,7 @@ jobs:
           # a tab.
           #
           cmd: 'jq -r ".[] | [.state, .title, .number, .html_url] | @tsv" current-issues.json'
-        multiline: true
+          multiline: true
       - name: Push issue list to Discord
         env:
           DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
