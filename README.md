@@ -11,6 +11,7 @@ Getting information *into* Discord is straight-forward.
 Flow:
 
 * Event comes in from some source (Gmail, GitHub issue, etc.).
+	* Triggers in GitHub: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
 * Push that event as a “task” to a channel in Discord.
 * If a task is a bigger thing, then someone may take “ownership” first.
 * There may be a place where someone goes to get more details about the task.

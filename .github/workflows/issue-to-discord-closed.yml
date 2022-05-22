@@ -1,8 +1,8 @@
-name: Push issue to Discord
+name: Push newly closed issues to Discord
 
 on:
   issues:
-    types: [ opened ]
+    types: [ closed ]
 
 jobs:
   issue-to-discord:
@@ -16,4 +16,4 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
-          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER) - $ISSUE_URL\"}" $DISCORD_URL
+          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"[CLOSED] $ISSUE_TITLE (#$ISSUE_NUMBER) - <$ISSUE_URL>\"}" $DISCORD_URL

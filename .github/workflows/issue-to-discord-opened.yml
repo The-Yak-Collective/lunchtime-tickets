@@ -1,0 +1,22 @@
+name: Push newly opened/reopened issues to Discord
+
+on:
+  issues:
+    types: [ opened, reopened ]
+
+jobs:
+  issue-to-discord:
+    name: Push issue to Discord
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push issue to Discord
+        env:
+          DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"[OPENED] $ISSUE_TITLE (#$ISSUE_NUMBER) - <$ISSUE_URL>\"}" $DISCORD_URL
+       - name: Step two
+         run: |
+           something-different.sh
