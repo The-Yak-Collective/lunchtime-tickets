@@ -1,0 +1,48 @@
+name: Send a list of currently opened issues to Discord
+
+on: [ push ]
+  #schedule:
+  #  - cron: '0 0 * * *'
+
+jobs:
+  daily-issues-to-discord:
+    name: Push issue list to Discord
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get all opened issues
+        run: |
+          # https://docs.github.com/en/rest/issues/issues#list-repository-issues
+          #
+          curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/The-Yak-Collective/lunchtime-tickets/issues > current-issues.json
+      - name: Process issues with jq
+        uses: sergeysova/jq-action@v2 # https://github.com/sergeysova/jq-action
+        id: issues
+        with:
+          #
+          # For each element in the issue list array, extract the issue
+          # state, title, number, and HTML URL, separating fields with
+          # a tab.
+          #
+          cmd: 'jq -r ".[] | [.state, .title, .number, .html_url] | @tsv" current-issues.json'
+        multiline: true
+      - name: Push issue list to Discord
+        env:
+          DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
+        run: |
+          # Loop over lines processed by jq (above).
+          #
+          for ISSUE in "${{ steps.issues.outputs.value }}"; do
+            #
+            # Extract issue state, title, number, and URL from jq's
+            # output.
+            #
+            ISSUE_STATE="$(echo "$ISSUE" | cut -f 1)"
+            ISSUE_TITLE="$(echo "$ISSUE" | cut -f 2)"
+            ISSUE_NUMBER="$(echo "$ISSUE" | cut -f 3)"
+            ISSUE_URL="$(echo "$ISSUE" | cut -f 4)"
+            
+            # Post issue to Discord.
+            #
+            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" $DISCORD_URL
+          done
+          
