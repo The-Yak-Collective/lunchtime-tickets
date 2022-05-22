@@ -18,7 +18,7 @@ jobs:
           ISSUE_URL: ${{ github.event.issue.html_url }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_STATE: ${{ github.event.issue.state }}
+          ISSUE_STATE: ${{ github.event.action }} # https://stackoverflow.com/a/61908540
         run: |
           # Upper case inoming ISSUE_STATE (opened, closed, etc.).
           #
