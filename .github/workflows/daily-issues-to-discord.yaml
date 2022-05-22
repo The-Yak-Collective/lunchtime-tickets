@@ -9,40 +9,54 @@ jobs:
     name: Push issue list to Discord
     runs-on: ubuntu-latest
     steps:
-      - name: Get all opened issues
+      - name: Download jq
         run: |
-          # https://docs.github.com/en/rest/issues/issues#list-repository-issues
+          # Determine the most recent version of jq. See:
+          #
+          #     https://github.com/stedolan/jq/releases
+          #
+          JQ_VERSION="$(curl -L -s https://api.github.com/repos/stedolan/jq/tags | grep -Po '"name": ?"jq-\K.*?(?=")' | head -1)"
+
+          # Download jq.
+          #
+          curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64
+
+          # Make the jq binary executable.
+          #
+          chmod +x jq
+      - name: Pull current open issues
+        run: |
+          # Pull list of currently opened issues. See:
+          #
+          #     https://docs.github.com/en/rest/issues/issues#list-repository-issues
           #
           curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/The-Yak-Collective/lunchtime-tickets/issues > current-issues.json
-      - name: Process issues with jq
-        uses: sergeysova/jq-action@v2 # https://github.com/sergeysova/jq-action
-        id: issues
-        with:
-          #
+      - name: Process open issue list with jq
+        run: |
           # For each element in the issue list array, extract the issue
           # state, title, number, and HTML URL, separating fields with
           # a tab.
           #
-          cmd: 'jq -r ".[] | [.state, .title, .number, .html_url] | @tsv" current-issues.json'
-          multiline: true
+          jq -r ".[] | [.state, .title, .number, .html_url] | @tsv" current-issues.json > current-issues.tsv
       - name: Push issue list to Discord
         env:
           DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
         run: |
-          # Loop over lines processed by jq (above).
+          # Loop over lines processed by jq.
           #
-          for ISSUE in "${{ steps.issues.outputs.value }}"; do
-            #
+          while read -r ISSUE; do
+
             # Extract issue state, title, number, and URL from jq's
-            # output.
+            # output (ISSUE_STATE needs to be uppercase for
+            # consistency).
             #
-            ISSUE_STATE="$(echo "$ISSUE" | cut -f 1)"
+            ISSUE_STATE="$(echo "$ISSUE" | cut -f 1 | tr "[:lower:]" "[:upper:]")"
             ISSUE_TITLE="$(echo "$ISSUE" | cut -f 2)"
             ISSUE_NUMBER="$(echo "$ISSUE" | cut -f 3)"
             ISSUE_URL="$(echo "$ISSUE" | cut -f 4)"
-            
+
             # Post issue to Discord.
             #
             curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" $DISCORD_URL
-          done
+          done < current-issues.tsv
           
