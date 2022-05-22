@@ -1,0 +1,24 @@
+name: Push individual issue updates to Discord
+
+on:
+  issues:
+    types: [ opened, closed, reopened ]
+
+jobs:
+  issue-to-discord:
+    name: Push issue to Discord
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push issue to Discord
+        env:
+          DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+		  ISSUE_STATE: ${{ github.event.issue.state }}
+        run: |
+          export ISSUE_STATE="$(echo "$ISSUE_STATE" | tr "[:lower:]" "[:upper:]")"
+		  if [[ "$ISSUE_STATE" == "CLOSED" ]]; then
+		    ISSUE_TITLE="~~${ISSUE_TITLE}~~"
+		  fi
+          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" $DISCORD_URL
