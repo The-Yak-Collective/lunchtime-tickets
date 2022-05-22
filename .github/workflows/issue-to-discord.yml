@@ -20,7 +20,7 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
           ISSUE_STATE: ${{ github.event.action }} # https://stackoverflow.com/a/61908540
         run: |
-          # Upper case inoming ISSUE_STATE (opened, closed, etc.).
+          # Upper case incoming ISSUE_STATE (opened, closed, etc.).
           #
           export ISSUE_STATE="$(echo "$ISSUE_STATE" | tr "[:lower:]" "[:upper:]")"
           
