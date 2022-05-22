@@ -2,7 +2,7 @@ name: Push individual issue updates to Discord
 
 on:
   issues:
-    types: [ opened, closed, reopened ]
+    types: [ opened, closed, reopened ] # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#issues
 
 jobs:
   issue-to-discord:
@@ -10,15 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Push issue to Discord
-        env:
+	  env:
           DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
+	      #
+	      # Event structure: https://docs.github.com/en/rest/issues/events
+		  #
           ISSUE_URL: ${{ github.event.issue.html_url }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
           ISSUE_TITLE: ${{ github.event.issue.title }}
 		  ISSUE_STATE: ${{ github.event.issue.state }}
         run: |
+		  # Upper case inoming ISSUE_STATE (opened, closed, etc.).
+		  #
           export ISSUE_STATE="$(echo "$ISSUE_STATE" | tr "[:lower:]" "[:upper:]")"
+		  
+		  # If the issue is closed, make it strike through on Discord.
+		  #
 		  if [[ "$ISSUE_STATE" == "CLOSED" ]]; then
 		    ISSUE_TITLE="~~${ISSUE_TITLE}~~"
 		  fi
+		  
+		  # Push issue notification to Discord.
+		  #
           curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" $DISCORD_URL
