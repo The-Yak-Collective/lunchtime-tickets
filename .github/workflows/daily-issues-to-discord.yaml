@@ -15,11 +15,11 @@ jobs:
           #
           #     https://github.com/stedolan/jq/releases
           #
-          JQ_VERSION="$(curl -L -s https://api.github.com/repos/stedolan/jq/tags | grep -Po '"name": ?"jq-\K.*?(?=")' | head -1)"
+          JQ_VERSION="$(curl -L -s "https://api.github.com/repos/stedolan/jq/tags" | grep -Po '"name": ?"jq-\K.*?(?=")' | head -1)"
 
           # Download jq.
           #
-          curl -L -o jq https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64
+          curl -L -o jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-linux64"
 
           # Make the jq binary executable.
           #
@@ -30,7 +30,7 @@ jobs:
           #
           #     https://docs.github.com/en/rest/issues/issues#list-repository-issues
           #
-          curl -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/The-Yak-Collective/lunchtime-tickets/issues > current-issues.json
+          curl -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/The-Yak-Collective/lunchtime-tickets/issues" > current-issues.json
       - name: Process open issue list with jq
         run: |
           # For each element in the issue list array, extract the issue
@@ -44,7 +44,7 @@ jobs:
         run: |
           # Output header
           #
-          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"__**Open Issues as of $(date "+%A %B %e, %Y" | tr -s " ")**__\"}" $DISCORD_URL
+          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"__**Open Issues as of $(date "+%A %B %e, %Y" | tr -s " ")**__\"}" "$DISCORD_URL"
 
           # Loop over lines processed by jq.
           #
@@ -61,6 +61,6 @@ jobs:
 
             # Post issue to Discord.
             #
-            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" $DISCORD_URL
+            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" "$DISCORD_URL"
           done < current-issues.tsv
           
