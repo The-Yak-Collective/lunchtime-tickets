@@ -61,6 +61,6 @@ jobs:
 
             # Post issue to Discord.
             #
-            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"**[$ISSUE_STATE]** $ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" "$DISCORD_URL"
+            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" "$DISCORD_URL"
           done < current-issues.tsv
           
