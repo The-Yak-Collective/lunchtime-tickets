@@ -4,6 +4,7 @@
 # https://developers.google.com/gmail/imap/imap-extensions
 # https://support.google.com/mail/answer/7190?hl=en
 # https://pygithub.readthedocs.io/en/latest/examples/Issue.html
+# https://github.com/sibson/ghinbox
 
 # Better guides:
 # 	https://coderslegacy.com/python/imap-read-emails-with-imaplib/
@@ -38,11 +39,16 @@ server.select('"' + "INBOX" + '"')
 #
 response, raw_unprocessed_message_set = server.search(None, 'X-GM-RAW "to:(' + gmail_user + ') AND -label:(processed-by-lunchtime-tickets)"')
 
-unprocessed_message_set = ",".join(raw_unprocessed_message_set[0].decode().split())
+# Unfortunately, raw_unprocessed_message_set is a single element list
+# containing a byte string of message IDs, and we need a (regular)
+# comma-separated string of message IDs for future commands. So we
+# convert it here.
+#
+unprocessed_message_set_string = ",".join(raw_unprocessed_message_set[0].decode().split())
 
 # Fetch unprocessed message "To" headers
 #
-response, raw_to_headers = server.fetch(unprocessed_message_set, "(BODY[HEADER.FIELDS (TO)])")
+response, raw_ToField_headers = server.fetch(unprocessed_message_set_string, "(BODY[HEADER.FIELDS (TO)])")
 
 # Loop over raw headers and extract message number and "To" address.
 #
@@ -52,37 +58,65 @@ response, raw_to_headers = server.fetch(unprocessed_message_set, "(BODY[HEADER.F
 # Regardless of whether the message was turned into an issue, mark it
 # as processed so that we don't have to read it again.
 #
-for raw_to_header in raw_to_headers:
-	if isinstance(raw_to_header, tuple):
-		message_number = raw_to_header[0].split()[0].decode()
-		message_match = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_to_headers[-2][1].decode())
+for raw_ToField_header in raw_ToField_headers:
+	if isinstance(raw_ToField_header, tuple):
+		message_number = raw_ToField_header[0].decode().split()[0]
+
+		# TODO - This will still match to strings like
+		# "yakcollective.org+foo@gmail.com <evil.email@example.com>".
+		# If we wanted to do this right, we'd create a list of all
+		# "To" emails, parse out the *actual* email address (ignoring
+		# the "friendly name"), and *then* match.
+		#
+		message_match = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
+
 		if message_match:
 			response, raw_message = server.fetch(message_number, "(RFC822)")
 			message = email.message_from_string(raw_message[0][1].decode(), policy=policy.default)
 
-			subject = message["Subject"] # subject
-			# Extract message content + attachments
-			eml = message.as_string() # message as attachment
-			# Create ticket (subject, text part, message as attachment, other attachments?)
-		server.store(message_number, "+X-GM-LABELS", "(processed-by-lunchtime-tickets)")		
+			subject = message["Subject"] # Subject
+			eml = message.as_string() # Message as attachment
 
-# Walk a message
-#
-# Probably need to concatenate text/plain and text/html parts? And save off attachments.
-#
-# for part in message.walk():
-# 	print(part.get_content_type())
-# 	print(part.get_filename())
-# 	print(part.get_content_disposition())
-# 	if part.get_content_type() == "text/plain" or part.get_content_type() == "text/html":
-# 		print("")
-# 		print(part.get_content())
-# 	elif part.get_content_disposition():
-# 		print("")
-# 		print(part.get_content().decode())
-# 	print("")
-# 	print("---")
-# 	print("")
+			# Walk through message parts and extract MIME parts.
+			# 
+			# Parts that are text/plain or text/html without a content
+			# disposition are treated as the message body; if multiple
+			# such parts of the same type are found, we concatenate
+			# them. Parts without a content disposition that are *not*
+			# of type text/plain or text/html are ignored.
+			#
+			# Parts that *have* a content disposition and a file name
+			# are treated as attachments. Parts with a content
+			# disposition and no file name are ignored.
+			#
+			# TODO - Ideally, we should separately track content that
+			# has a content disposition of "inline" and then try to
+			# re-embed it when creating the issue in GitHub.
+			#
+			message_body = {
+				"text": "",
+				"html": ""
+			}
+			message_attachments = []
+
+			for message_part in message.walk():
+				if not message_part.get_content_type().startswith("multipart/"):
+					if not message_part.get_content_disposition() and (message_part.get_content_type() == "text/plain" or message_part.get_content_type() == "text/html"):
+						if message_part.get_content_type() == "text/plain":
+							message_body["text"] = (message_body["text"] + "\n\n" + message_part.get_content()).strip()
+						elif message_part.get_content_type() == "text/html":
+							message_body["html"] = (message_body["html"] + message_part.get_content()).strip()
+					elif message_part.get_content_disposition():
+						attachment_data = {
+							"type": message_part.get_content_type(),
+							"name": message_part.get_filename(),
+							"data": message_part.get_content()
+						}
+						message_attachments.append(attachment_data)
+
+			# TODO - Create ticket (subject, text part, message as attachment, other attachments?)
+
+		server.store(message_number, "+X-GM-LABELS", "(processed-by-lunchtime-tickets)")		
 
 # Be kind, rewind
 #
