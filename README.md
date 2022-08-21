@@ -8,11 +8,11 @@ Task management when everyone's out to lunch.
 
 2. Set up the follwing *repo* secrets in Settings > Security > Secrets > Actions:
 
-	- `ACCESS_TOKEN` -- A GitHub access token with the `repo` scope. (Yes, this is much broader than we need. Unfortunately GitHub doesn't offer a scope that's restricted only to issues. We can't use the automatically generated `GITHUB_TOKEN` here, as we *want* some flows to cause others -- in particular the `issue-to-discord` action -- to be run.)
-	- `DISCORD_CHANNEL` -- The Discord channel you want ticket notifications to be posted in.
-	- `GMAIL_USER` -- The Gmail username that should be scanned for incoming tickets (see "Issues from Gmail", below).
-	- `GMAIL_PASS` -- A [Gmail App Password](https://support.google.com/mail/answer/185833) for the above account.
-	- `REPO_NAME` -- The (forked) repo name, including the user/org part. For example, `The-Yak-Collective/lunchtime-tickets`.
+	- `ACCESS_TOKEN` - A GitHub access token with the `repo` scope. (Yes, this is much broader than we need. Unfortunately GitHub doesn't offer a scope that's restricted only to issues. We can't use the automatically generated `GITHUB_TOKEN` here, as we *want* some flows to cause others - in particular the `issue-to-discord` action - to be run.)
+	- `DISCORD_CHANNEL` - The Discord channel you want ticket notifications to be posted in.
+	- `GMAIL_USER` - The Gmail username that should be scanned for incoming tickets (see "Issues from Gmail", below).
+	- `GMAIL_PASS` - A [Gmail App Password](https://support.google.com/mail/answer/185833) for the above account.
+	- `REPO_NAME` - The (forked) repo name, including the user/org part. For example, `The-Yak-Collective/lunchtime-tickets`.
 
 ### Daily Issues to Discord
 
