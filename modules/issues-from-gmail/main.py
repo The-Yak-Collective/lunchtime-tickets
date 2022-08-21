@@ -113,6 +113,10 @@ for raw_ToField_header in raw_ToField_headers:
 			# email clients like to wrap things in <div> tags these
 			# days, rather than using <p> tags.
 			#
+			# We also need to deal with the <div>-<br>-<div> sequence
+			# without busting the ability to use <br> tags in general.
+			# Hence the wacky replacement after conversion.
+			#
 			if message_body["html"] != "":
 				message_body["text"] = md(message_body["html"].replace("<div ", "<p ").replace("<div>", "<p>").replace("</div>", "</p>"), heading_style = "ATX").replace("\n\n  \n\n\n", "\n\n").strip()
 
