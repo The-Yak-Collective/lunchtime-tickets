@@ -2,6 +2,28 @@
 
 Task management when everyone's out to lunch.
 
+## Setup
+
+1. Fork this repo.
+
+2. Set up the follwing *repo* secrets in Settings > Security > Secrets > Actions:
+
+	- `DISCORD_CHANNEL` --- The Discord channel you want ticket notifications to be posted in.
+	- `GMAIL_USER` --- The Gmail username that should be scanned for incoming tickets (see "Issues from Gmail", below).
+	- `GMAIL_APP_PASSWORD` --- A [Gmail App Password](https://support.google.com/mail/answer/185833) for the above account.
+
+### Daily Issues to Discord
+
+This action posts a daily summary of all open issues to `DISCORD_CHANNEL`.
+
+### Issue to Discord
+
+This action posts a notification to `DISCORD_CHANNEL` whenever an issue is opened, closed, or re-opened.
+
+### Issues from Gmail
+
+This action will only run if both `GMAIL_USER` and `GMAIL_APP_PASSWORD` secrets exist. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwised manipulated, so this script is suitable for use with a shared account.
+
 ## Initial Meeting Notes
 
 Maier wants the main interface to be Discord.
