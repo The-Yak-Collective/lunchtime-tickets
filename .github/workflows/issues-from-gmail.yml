@@ -20,7 +20,6 @@ jobs:
       - name: Pull new issues from Gmail
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          REPO_NAME: ${{ secrets.REPO_NAME }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
         run: |

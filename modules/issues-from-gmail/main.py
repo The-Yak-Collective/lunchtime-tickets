@@ -14,7 +14,7 @@ from markdownify import markdownify as md
 # Grab login information from the environment
 #
 github_token = os.environ["ACCESS_TOKEN"]
-github_repo = os.environ["REPO_NAME"]
+github_repo = os.environ["GITHUB_REPOSITORY"]
 gmail_user = os.environ["GMAIL_USER"]
 gmail_pass = os.environ["GMAIL_PASS"]
 
