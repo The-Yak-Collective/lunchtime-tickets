@@ -2,14 +2,14 @@ name: Pull new issues from Gmail
 
 on:
   schedule:
-    - cron: '30 */1 * * *'
+    - cron: '*/15 * * * *'
 
 jobs:
   issues-to-gmail:
     name: Pull new issues from Gmail
     runs-on: ubuntu-latest
     steps:
-      - names: Check out repo
+      - name: Check out repo
         uses: actions/checkout@v3
       - name: Setup Python 3
         uses: actions/setup-python@v3
