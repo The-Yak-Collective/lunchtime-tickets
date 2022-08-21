@@ -1,15 +1,5 @@
 #!/usr/bin/env python3
 
-# https://docs.python.org/3/library/imaplib.html
-# https://developers.google.com/gmail/imap/imap-extensions
-# https://support.google.com/mail/answer/7190?hl=en
-# https://pygithub.readthedocs.io/en/latest/examples/Issue.html
-# https://github.com/sibson/ghinbox
-
-# Better guides:
-# 	https://coderslegacy.com/python/imap-read-emails-with-imaplib/
-# 	https://cmsdk.com/python/python-email-quotedprintable-encoding-problem.html
-
 # Import necessary packages
 #
 import email
@@ -97,24 +87,17 @@ for raw_ToField_header in raw_ToField_headers:
 				"text": "",
 				"html": ""
 			}
-			message_attachments = []
 
 			for message_part in message.walk():
 				if not message_part.get_content_type().startswith("multipart/"):
 					if not message_part.get_content_disposition() and (message_part.get_content_type() == "text/plain" or message_part.get_content_type() == "text/html"):
 						if message_part.get_content_type() == "text/plain":
-							message_body["text"] = (message_body["text"] + "\n\n" + message_part.get_content()).strip()
+							message_body["text"] = (message_body["text"] + "\n\n" + message_part.get_content().strip()).strip()
 						elif message_part.get_content_type() == "text/html":
-							message_body["html"] = (message_body["html"] + message_part.get_content()).strip()
-					elif message_part.get_content_disposition():
-						attachment_data = {
-							"type": message_part.get_content_type(),
-							"name": message_part.get_filename(),
-							"data": message_part.get_content()
-						}
-						message_attachments.append(attachment_data)
+							message_body["html"] = (message_body["html"] + message_part.get_content().strip()).strip()
 
 			# TODO - Create ticket (subject, text part, message as attachment, other attachments?)
+			# https://pygithub.readthedocs.io/en/latest/examples/Issue.html
 
 		server.store(message_number, "+X-GM-LABELS", "(processed-by-lunchtime-tickets)")		
 
