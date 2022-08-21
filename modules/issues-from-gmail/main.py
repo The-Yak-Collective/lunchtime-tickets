@@ -8,6 +8,7 @@ import os
 import re
 
 from email import policy
+from markdownify import markdownify as md
 
 # Grab login information from the environment
 #
@@ -96,7 +97,16 @@ for raw_ToField_header in raw_ToField_headers:
 						elif message_part.get_content_type() == "text/html":
 							message_body["html"] = (message_body["html"] + message_part.get_content().strip()).strip()
 
-			# TODO - Create ticket (subject, text part, message as attachment, other attachments?)
+			# It's very rare these days that much care is taken with
+			# the plain text part of messages. If an HTML part exists,
+			# we will almost always get a nicer issue by converting
+			# this into Markdown than by preferring the plain text
+			# part.
+			#
+			if message_body["html"] != "":
+				message_body["text"] = md(message_body["html"], heading_style = "ATX")
+
+			# TODO - Create ticket (subject, text part)
 			# https://pygithub.readthedocs.io/en/latest/examples/Issue.html
 
 		server.store(message_number, "+X-GM-LABELS", "(processed-by-lunchtime-tickets)")		
