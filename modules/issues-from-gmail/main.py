@@ -66,7 +66,6 @@ for raw_ToField_header in raw_ToField_headers:
 			message = email.message_from_string(raw_message[0][1].decode(), policy=policy.default)
 
 			subject = message["Subject"] # Subject
-			eml = message.as_string() # Message as attachment
 
 			# Walk through message parts and extract MIME parts.
 			# 
