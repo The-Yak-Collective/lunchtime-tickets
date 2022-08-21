@@ -108,8 +108,13 @@ for raw_ToField_header in raw_ToField_headers:
 			# this into Markdown than by preferring the plain text
 			# part.
 			#
+			# We do a quick-and-dirty replacement to turn
+			# <div> and </div> tags into <p> and </p> tags, as a lot of
+			# email clients like to wrap things in <div> tags these
+			# days, rather than using <p> tags.
+			#
 			if message_body["html"] != "":
-				message_body["text"] = md(message_body["html"], heading_style = "ATX")
+				message_body["text"] = md(message_body["html"].replace("<div ", "<p ").replace("<div>", "<p>").replace("</div>", "</p>"), heading_style = "ATX").replace("\n\n  \n\n\n", "\n\n").strip()
 
 			# Create ticket
 			#

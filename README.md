@@ -11,7 +11,7 @@ Task management when everyone's out to lunch.
 	- `ACCESS_TOKEN` --- A GitHub access token with the `repo` scope. (Yes, this is much broader than we need. Unfortunately GitHub doesn't offer a scope that's restricted only to issues.)
 	- `DISCORD_CHANNEL` --- The Discord channel you want ticket notifications to be posted in.
 	- `GMAIL_USER` --- The Gmail username that should be scanned for incoming tickets (see "Issues from Gmail", below).
-	- `GMAIL_APP_PASSWORD` --- A [Gmail App Password](https://support.google.com/mail/answer/185833) for the above account.
+	- `GMAIL_PASS` --- A [Gmail App Password](https://support.google.com/mail/answer/185833) for the above account.
 	- `REPO_NAME` --- The (forked) repo name, including the user/org part. For example, `The-Yak-Collective/lunchtime-tickets`.
 
 ### Daily Issues to Discord
@@ -24,7 +24,7 @@ This action posts a notification to `DISCORD_CHANNEL` whenever an issue is opene
 
 ### Issues from Gmail
 
-This action will only run if both `GMAIL_USER` and `GMAIL_APP_PASSWORD` secrets exist. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwised manipulated, so this script is suitable for use with a shared account.
+This action requires the `ACCESS_TOKEN`, `GMAIL_USER`, `GMAIL_PASS`, and `REPO_NAME` secrets. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwised manipulated, so this script is suitable for use with a shared account.
 
 ## Initial Meeting Notes
 
