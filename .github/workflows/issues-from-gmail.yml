@@ -1,0 +1,27 @@
+name: Pull new issues from Gmail
+
+on:
+  schedule:
+    - cron: '*/10 0 * * *'
+
+jobs:
+  issues-to-gmail:
+    name: Pull new issues from Gmail
+    runs-on: ubuntu-latest
+    steps:
+      - names: Check out repo
+        uses: actions/checkout@v3
+      - name: Setup Python 3
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+      - name: Install required packages
+        run: python3 -m pip install -r modules/issues-from-gmail/requirements.txt
+      - name: Pull new issues from Gmail
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          REPO_NAME: ${{ secrets.REPO_NAME }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+        run: |
+          python3 modules/issues-from-gmail/main.py
