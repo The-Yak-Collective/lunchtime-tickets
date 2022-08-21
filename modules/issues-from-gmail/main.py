@@ -8,10 +8,13 @@ import os
 import re
 
 from email import policy
+from github import Github
 from markdownify import markdownify as md
 
 # Grab login information from the environment
 #
+github_token = os.environ['ACCESS_TOKEN']
+github_repo = os.environ['REPO_NAME']
 gmail_user = os.environ['GMAIL_USER']
 gmail_pass = os.environ['GMAIL_PASS']
 
@@ -19,6 +22,11 @@ gmail_pass = os.environ['GMAIL_PASS']
 #
 gmail_user_part = gmail_user.split("@")[0]
 gmail_domain_part = gmail_user.split("@")[1]
+
+# Connect to GitHub
+#
+gh = Github(github_token)
+lunchtime_tickets = gh.get_repo(github_repo)
 
 # Connect to Gmail
 #
@@ -65,8 +73,6 @@ for raw_ToField_header in raw_ToField_headers:
 			response, raw_message = server.fetch(message_number, "(RFC822)")
 			message = email.message_from_string(raw_message[0][1].decode(), policy=policy.default)
 
-			subject = message["Subject"] # Subject
-
 			# Walk through message parts and extract MIME parts.
 			# 
 			# Parts that are text/plain or text/html without a content
@@ -105,9 +111,12 @@ for raw_ToField_header in raw_ToField_headers:
 			if message_body["html"] != "":
 				message_body["text"] = md(message_body["html"], heading_style = "ATX")
 
-			# TODO - Create ticket (subject, text part)
-			# https://pygithub.readthedocs.io/en/latest/examples/Issue.html
+			# Create ticket
+			#
+			lunchtime_tickets.create_issue(title = message["Subject"], body = message_body["text"])
 
+		# Mark message as processed
+		#
 		server.store(message_number, "+X-GM-LABELS", "(processed-by-lunchtime-tickets)")		
 
 # Be kind, rewind
