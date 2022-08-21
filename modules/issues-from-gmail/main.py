@@ -13,10 +13,10 @@ from markdownify import markdownify as md
 
 # Grab login information from the environment
 #
-github_token = os.environ['ACCESS_TOKEN']
-github_repo = os.environ['REPO_NAME']
-gmail_user = os.environ['GMAIL_USER']
-gmail_pass = os.environ['GMAIL_PASS']
+github_token = os.environ["ACCESS_TOKEN"]
+github_repo = os.environ["REPO_NAME"]
+gmail_user = os.environ["GMAIL_USER"]
+gmail_pass = os.environ["GMAIL_PASS"]
 
 # Determine the Gmail user and domain parts
 #
