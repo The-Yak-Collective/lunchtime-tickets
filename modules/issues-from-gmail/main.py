@@ -48,7 +48,7 @@ unprocessed_message_set_string = ",".join(raw_unprocessed_message_set[0].decode(
 # If len(unprocessed_message_set_string) == 0, then there are no new
 # messages and we can just bail.
 #
-if len(unprocessed_message_set_string) == 0:
+if len(unprocessed_message_set_string) != 0:
 
 	# Fetch unprocessed message "To" headers
 	#
