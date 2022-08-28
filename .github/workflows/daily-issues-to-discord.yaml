@@ -2,7 +2,7 @@ name: Send a list of currently opened issues to Discord
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '45 0 * * *'
 
 jobs:
   daily-issues-to-discord:
