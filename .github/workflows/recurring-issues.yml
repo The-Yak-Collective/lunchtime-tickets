@@ -2,7 +2,7 @@ name: Reopen recurring issues
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 0 * * *'
 
 jobs:
   issues-to-gmail:
