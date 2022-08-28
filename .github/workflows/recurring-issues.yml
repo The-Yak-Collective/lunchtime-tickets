@@ -1,0 +1,24 @@
+name: Reopen recurring issues
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+
+jobs:
+  issues-to-gmail:
+    name: Reopen recurring issues
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Setup Python 3
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.x"
+      - name: Install required packages
+        run: python3 -m pip install -r modules/recurring-issues/requirements.txt
+      - name: Reopen recurring issues
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          python3 modules/recurring-issues/main.py
