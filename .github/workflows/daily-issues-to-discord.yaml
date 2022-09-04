@@ -67,4 +67,6 @@ jobs:
               #
               curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" "$DISCORD_URL"
             done < current-issues.tsv
+          else
+            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"Nothing to do right now. Huzzah!\"}" "$DISCORD_URL"
           fi
