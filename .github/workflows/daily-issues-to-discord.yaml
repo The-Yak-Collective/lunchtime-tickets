@@ -42,25 +42,29 @@ jobs:
         env:
           DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
         run: |
-          # Output header
+          # Don't run if there's nothing to do
           #
-          curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"__**Open Issues as of $(date "+%A %B %e, %Y" | tr -s " ")**__\"}" "$DISCORD_URL"
+          if [[ -s current-issue.tsv ]]; then
 
-          # Loop over lines processed by jq.
-          #
-          while read -r ISSUE; do
-
-            # Extract issue state, title, number, and URL from jq's
-            # output (ISSUE_STATE needs to be uppercase for
-            # consistency).
+            # Output header
             #
-            ISSUE_STATE="$(echo "$ISSUE" | cut -f 1 | tr "[:lower:]" "[:upper:]")"
-            ISSUE_TITLE="$(echo "$ISSUE" | cut -f 2)"
-            ISSUE_NUMBER="$(echo "$ISSUE" | cut -f 3)"
-            ISSUE_URL="$(echo "$ISSUE" | cut -f 4)"
+            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"__**Open Issues as of $(date "+%A %B %e, %Y" | tr -s " ")**__\"}" "$DISCORD_URL"
 
-            # Post issue to Discord.
+            # Loop over lines processed by jq.
             #
-            curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" "$DISCORD_URL"
-          done < current-issues.tsv
-          
+            while read -r ISSUE; do
+
+              # Extract issue state, title, number, and URL from jq's
+              # output (ISSUE_STATE needs to be uppercase for
+              # consistency).
+              #
+              ISSUE_STATE="$(echo "$ISSUE" | cut -f 1 | tr "[:lower:]" "[:upper:]")"
+              ISSUE_TITLE="$(echo "$ISSUE" | cut -f 2)"
+              ISSUE_NUMBER="$(echo "$ISSUE" | cut -f 3)"
+              ISSUE_URL="$(echo "$ISSUE" | cut -f 4)"
+
+              # Post issue to Discord.
+              #
+              curl -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST --data "{\"content\": \"$ISSUE_TITLE (#$ISSUE_NUMBER) — <$ISSUE_URL>\"}" "$DISCORD_URL"
+            done < current-issues.tsv
+          fi
