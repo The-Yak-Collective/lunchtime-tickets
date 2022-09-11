@@ -3,6 +3,7 @@
 # Import necessary packages
 #
 import email
+import secrets_manager
 import imaplib
 import os
 import re
@@ -28,6 +29,12 @@ gmail_domain_part = gmail_user.split("@")[1]
 gh = Github(github_token)
 lunchtime_tickets = gh.get_repo(github_repo)
 
+# Pull list of sender emails to always process. We need to include
+# repo_handle here so that the secret containing the sender emails
+# can be updated.
+#
+sender_always_process_list = secret_manager.update(repo_handle = lunchtime_tickets, var_name = "GMAIL_ALWAYS_PROCESS", base = "", add = "ADD",remove = "REMOVE", separator = "_")
+
 # Connect to Gmail
 #
 server = imaplib.IMAP4_SSL("imap.gmail.com")
@@ -50,14 +57,86 @@ unprocessed_message_set_string = ",".join(raw_unprocessed_message_set[0].decode(
 #
 if len(unprocessed_message_set_string) != 0:
 
-	# Fetch unprocessed message "To" headers
+	# Fetch unprocessed message "To" and "From" headers
 	#
 	response, raw_ToField_headers = server.fetch(unprocessed_message_set_string, "(BODY[HEADER.FIELDS (TO)])")
+	response, raw_FromField_headers = server.fetch(unprocessed_message_set_string, "(BODY[HEADER.FIELDS (FROM)])")
+
+	# Set of messages to process (later)
+	#
+	messages_to_process = {}
+	all_messages = {}
 
 	# Loop over raw headers and extract message number and "To"
 	# address.
 	#
-	# If "To" address contains a "+", then fetch the full ("RFC822")
+	# If a "To" address contains a "+" then add it to
+	# messages_to_process.
+	#
+	for raw_ToField_header in raw_ToField_headers:
+		if isinstance(raw_ToField_header, tuple):
+			message_number = raw_ToField_header[0].decode().split()[0]
+
+			# FIXME - This will still match to strings like
+			# "yakcollective.org+foo@gmail.com <evil.email@example.com>".
+			# If we wanted to do this right, we'd create a list of all
+			# "To" emails, parse out the *actual* email address
+			# (ignoring the "friendly name"), and *then* match.
+			#
+			message_match = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
+
+			# Add matched messages to messages_to_process
+			#
+			if message_match:
+				messages_to_process.add(message_number)
+			
+			# Regardless of whether we had a match or not, add the
+			# message to all_messages.
+			# 
+			all_messages.add(message_number)
+
+	# Loop over raw headers and extract message number and "From"
+	# address.
+	#
+	# If a "from" address is in sender_always_process_list then add it
+	# to messages_to_process.
+	#
+	for raw_FromField_header in raw_FromField_headers:
+		if isinstance(raw_FromField_header, tuple):
+			message_number = raw_FromField_header[0].decode().split()[0]
+
+			# TODO - Match "From" address to elements of
+			# sender_always_process_list
+			#
+			# 1. Extract email of sender
+			# 2. Check if email is in sender_re_part
+
+			# Add matched messages to messages_to_process
+			#
+			if message_match:
+				messages_to_process.add(message_number)
+			
+			# Regardless of whether we had a match or not, add the
+			# message to all_messages.
+			# 
+			all_messages.add(message_number)
+
+	# TODO - Fix everything below this line
+
+	##############################
+	# DONE - loop1: go over froms and add "always" to this set
+	# ???? - loop2: go over tos and add matchings to this set
+	# TODO - loop3: go over set and fetch each message and process it
+	# TODO - loop4: go over all messages mark as lunch ticket processed
+	#
+	# TODO - Move secrets_manager.py out to its own module
+	##############################
+
+	# Loop over raw headers and extract message number and "To"
+	# address.
+	#
+	# If a "To" address contains a "+" or the "From" address is one of
+	# the senders we always process, then fetch the full ("RFC822")
 	# message and create a corresponding issue in GitHub.
 	#
 	# Regardless of whether the message was turned into an issue, mark
@@ -73,9 +152,14 @@ if len(unprocessed_message_set_string) != 0:
 			# "To" emails, parse out the *actual* email address
 			# (ignoring the "friendly name"), and *then* match.
 			#
-			message_match = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
+			match_on_to = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
 
-			if message_match:
+			# sender_always_process_list
+			X=...
+			match_on_from= X in senders_always_process_list
+			re.search(r'[\s<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
+
+			if match_on_to or match_on_from:
 				response, raw_message = server.fetch(message_number, "(RFC822)")
 				message = email.message_from_string(raw_message[0][1].decode(), policy=policy.default)
 

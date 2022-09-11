@@ -6,7 +6,7 @@ Task management when everyone's out to lunch.
 
 1. Fork this repo.
 
-2. Set up the follwing *repo* secrets in Settings > Security > Secrets > Actions:
+2. Set up the following *repo* secrets in Settings > Security > Secrets > Actions:
 
 	- `ACCESS_TOKEN` - A GitHub access token with the `repo` scope. This is used for those cases where we *want* some action to cause other actions to run (in particular the `issue-to-discord` action), and thus can't use the built-in `GITHUB_TOKEN`.
 	- `DISCORD_CHANNEL` - The Discord channel you want ticket notifications to be posted in.

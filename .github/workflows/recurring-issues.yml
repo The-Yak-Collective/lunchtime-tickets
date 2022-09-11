@@ -16,9 +16,9 @@ jobs:
         with:
           python-version: "3.x"
       - name: Install required packages
-        run: python3 -m pip install -r modules/recurring-issues/requirements.txt
+        run: python3 -m pip install -r workflows/recurring-issues/requirements.txt
       - name: Reopen recurring issues
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
-          python3 modules/recurring-issues/main.py
+          python3 workflows/recurring-issues/main.py
