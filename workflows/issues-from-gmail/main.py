@@ -33,7 +33,7 @@ lunchtime_tickets = gh.get_repo(github_repo)
 # repo_handle here so that the secret containing the sender emails
 # can be updated.
 #
-sender_always_process_list = secret_manager.update(repo_handle = lunchtime_tickets, var_name = "GMAIL_ALWAYS_PROCESS", base = "", add = "ADD",remove = "REMOVE", separator = "_")
+sender_always_process_list = secrets_manager.update(repo_handle = lunchtime_tickets, var_name = "GMAIL_ALWAYS_PROCESS", base = "", add = "ADD",remove = "REMOVE", separator = "_")
 
 # Connect to Gmail
 #
@@ -154,12 +154,7 @@ if len(unprocessed_message_set_string) != 0:
 			#
 			match_on_to = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
 
-			# sender_always_process_list
-			X=...
-			match_on_from= X in senders_always_process_list
-			re.search(r'[\s<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
-
-			if match_on_to or match_on_from:
+			if match_on_to:
 				response, raw_message = server.fetch(message_number, "(RFC822)")
 				message = email.message_from_string(raw_message[0][1].decode(), policy=policy.default)
 
