@@ -23,7 +23,7 @@ This action requires `DISCORD_CHANNEL`. It posts a notification to the specified
 
 ### Issues from Gmail
 
-This action requires the `ACCESS_TOKEN`, `GMAIL_USER`, and `GMAIL_PASS` secrets. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwised manipulated, so this script is suitable for use with a shared account.
+This action requires the `ACCESS_TOKEN`, `GMAIL_USER`, and `GMAIL_PASS` secrets. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwise manipulated, so this script is suitable for use with a shared account.
 
 ### Recurring Issues
 
