@@ -44,7 +44,7 @@ jobs:
         run: |
           # Don't run if there's nothing to do
           #
-          if [[ -s current-issue.tsv ]]; then
+          if [[ -s current-issues.tsv ]]; then
 
             # Output header
             #
@@ -59,7 +59,7 @@ jobs:
               # consistency).
               #
               ISSUE_STATE="$(echo "$ISSUE" | cut -f 1 | tr "[:lower:]" "[:upper:]")"
-              ISSUE_TITLE="$(echo "$ISSUE" | cut -f 2)"
+              ISSUE_TITLE="$(echo "$ISSUE" | cut -f 2 | sed -e "s/\"/'/g")"
               ISSUE_NUMBER="$(echo "$ISSUE" | cut -f 3)"
               ISSUE_URL="$(echo "$ISSUE" | cut -f 4)"
 

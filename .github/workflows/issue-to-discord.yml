@@ -22,8 +22,12 @@ jobs:
         run: |
           # Upper case incoming ISSUE_STATE (opened, closed, etc.).
           #
-          export ISSUE_STATE="$(echo "$ISSUE_STATE" | tr "[:lower:]" "[:upper:]")"
+          ISSUE_STATE="$(echo "$ISSUE_STATE" | tr "[:lower:]" "[:upper:]")"
           
+          # Eliminate double-quotes from issue titles, as these can cause problems.
+          #
+          ISSUE_TITLE="$(echo "$ISSUE_TITLE" | sed -e "s/\"/'/g")"
+
           # If the issue is closed, make it strike through on Discord.
           #
           if [[ "$ISSUE_STATE" == "CLOSED" ]]; then
