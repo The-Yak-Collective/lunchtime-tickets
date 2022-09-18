@@ -20,7 +20,10 @@ jobs:
       - name: Pull new issues from Gmail
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_ALWAYS_PROCESS: ${{ secrets.GMAIL_ALWAYS_PROCESS }}
+          GMAIL_ALWAYS_PROCESS_ADD: ${{ secrets.GMAIL_ALWAYS_PROCESS_ADD }}
+          GMAIL_ALWAYS_PROCESS_REMOVE: ${{ secrets.GMAIL_ALWAYS_PROCESS_REMOVE }}
           GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
         run: |
-          python3 workflows/issues-from-gmail/main.py
+          env PYTHONPATH="$(pwd)/modules" python3 workflows/issues-from-gmail/main.py

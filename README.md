@@ -23,7 +23,11 @@ This action requires `DISCORD_CHANNEL`. It posts a notification to the specified
 
 ### Issues from Gmail
 
-This action requires the `ACCESS_TOKEN`, `GMAIL_USER`, and `GMAIL_PASS` secrets. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwise manipulated, so this script is suitable for use with a shared account.
+This action requires the `ACCESS_TOKEN`, `GMAIL_USER`, and `GMAIL_PASS` secrets. It scans the specified Gmail inbox looking for new [task-specific emails](https://support.google.com/a/users/answer/9308648) or emails in a (newline separated) list from the `GMAIL_ALWAYS_PROCESS` secret and then converts them into GitHub issues. Processed emails are labeled with `processed-by-lunchtime-tickets` and ignored on subsequent runs. Emails are not otherwise manipulated, so this script is suitable for use with a shared account.
+
+#### `GMAIL_ALWAYS_PROCESS`
+
+The `GMAIL_ALWAYS_PROCESS` secret contains a newline-separated list of "From" emails to *always* process. To make management of this secret easier, two additional secrets are used - `GMAIL_ALWAYS_PROCESS_ADD` and `GMAIL_ALWAYS_PROCESS_REMOVE`. These are also newline-separated lists of emails; during processing, the union of `GMAIL_ALWAYS_PROCESS` and `GMAIL_ALWAYS_PROCESS_ADD` will be calculated, and then any emails listed in `GMAIL_ALWAYS_PROCESS_REMOVE` will be dropped from the set. The new value for `GMAIL_ALWAYS_PROCESS` will then be saved back to GitHub.
 
 ### Recurring Issues
 

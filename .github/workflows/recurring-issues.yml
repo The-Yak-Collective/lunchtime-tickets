@@ -21,4 +21,4 @@ jobs:
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         run: |
-          python3 workflows/recurring-issues/main.py
+          env PYTHONPATH="$(pwd)/modules" python3 workflows/recurring-issues/main.py

@@ -1,4 +1,7 @@
-# created by virtualenv automatically
+# Created by virtualenv automatically
 bin/
 lib/
 pyvenv.cfg
+
+# Ignore Python caches
+**/__pycache__
