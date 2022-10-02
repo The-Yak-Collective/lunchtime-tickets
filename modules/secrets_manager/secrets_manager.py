@@ -29,7 +29,7 @@ def update(repo_handle, var_name, base = "", add = "ADD", remove = "REMOVE", sep
 	# Take the union of secrets and secrets_to_add and then remove
 	# secrets_to_remove.
 	#
-	new_secrets = list((set(secrets).union(set(secrets_to_add))).difference(set(secrets_to_remove))).sort()
+	new_secrets = sorted(list((set(secrets).union(set(secrets_to_add))).difference(set(secrets_to_remove))))
 
 	# Update the base secret value with the value derived in
 	# new_secrets, but only if there's been a change.
@@ -48,6 +48,11 @@ def update(repo_handle, var_name, base = "", add = "ADD", remove = "REMOVE", sep
 		repo_handle.create_secret(secrets_to_add_name, " ")
 	if len(secrets_to_remove) != 0:
 		repo_handle.create_secret(secrets_to_remove_name, " ")
+
+	# Echo back new_secrets so that it's possible to know what this actually is!
+	#
+	print("Current value of " + secret_name + ":")
+	print(new_secrets_string)
 
 	# Return the list of secret values (with add/removes).
 	#
