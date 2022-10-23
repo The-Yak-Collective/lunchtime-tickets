@@ -24,7 +24,7 @@ closed_issues = lunchtime_tickets.get_issues(state='closed')
 # Loop over closed issues looking for recurring issues
 #
 for issue in closed_issues:
-	if issue.title.startswith("[RECURRING]"):
+	if issue.title.lower().startswith("[recurring]"):
 		try:
 			# Extract frequency/current/next
 			#
