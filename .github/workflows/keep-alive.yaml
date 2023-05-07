@@ -1,0 +1,25 @@
+name: Commit a timestamp to the repository to keep GitHub Actions alive
+
+on:
+  schedule:
+    - cron: '15 1 * * *'
+
+jobs:
+  daily-issues-to-discord:
+    name: Commit keep-alive timestamp
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Create & commit repository keep-alive timestamp
+        env:
+          DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
+        run: |
+          date > .keep-alive
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -A -v
+          git commit -m "Auto-update RSS feed" || true
+          git push
