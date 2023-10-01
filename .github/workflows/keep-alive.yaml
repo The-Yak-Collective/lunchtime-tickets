@@ -14,8 +14,6 @@ jobs:
         with:
           fetch-depth: 0
       - name: Create & commit repository keep-alive timestamp
-        env:
-          DISCORD_URL: ${{ secrets.DISCORD_CHANNEL }}
         run: |
           date > .keep-alive
           git config user.name github-actions
