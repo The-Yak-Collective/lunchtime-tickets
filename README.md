@@ -1,4 +1,4 @@
-# Lunchtime Tickets
+# Lunchtime tickets
 
 Task management when everyone's out to lunch.
 
@@ -13,7 +13,7 @@ Task management when everyone's out to lunch.
 	- `GMAIL_USER` - The Gmail username that should be scanned for incoming tickets (see "Issues from Gmail", below).
 	- `GMAIL_PASS` - A [Gmail App Password](https://support.google.com/mail/answer/185833) for the above account.
 
-### Daily Issues to Discord
+### Daily issues to Discord
 
 This action requires `DISCORD_CHANNEL`. It posts a daily summary of all open issues to the specified channel.
 
@@ -29,7 +29,7 @@ This action requires the `ACCESS_TOKEN`, `GMAIL_USER`, and `GMAIL_PASS` secrets.
 
 The `GMAIL_ALWAYS_PROCESS` secret contains a newline-separated list of "From" emails to *always* process. To make management of this secret easier, two additional secrets are used - `GMAIL_ALWAYS_PROCESS_ADD` and `GMAIL_ALWAYS_PROCESS_REMOVE`. These are also newline-separated lists of emails; during processing, the union of `GMAIL_ALWAYS_PROCESS` and `GMAIL_ALWAYS_PROCESS_ADD` will be calculated, and then any emails listed in `GMAIL_ALWAYS_PROCESS_REMOVE` will be dropped from the set. The new value for `GMAIL_ALWAYS_PROCESS` will then be saved back to GitHub, as well as echoed back in the Actions log (so you know what the current value is).
 
-### Recurring Issues
+### Recurring issues
 
 This action requires the `ACCESS_TOKEN` secret. It scans closed issues for issues with a title prefixed by `[RECURRING]` with a body of the following format:
 
