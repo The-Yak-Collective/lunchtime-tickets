@@ -13,8 +13,6 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Python 3
         uses: actions/setup-python@v3
-        with:
-          python-version: "3.12.x"
       - name: Install required packages
         run: python3 -m pip install -r workflows/recurring-issues/requirements.txt
       - name: Reopen recurring issues

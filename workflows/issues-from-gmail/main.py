@@ -83,7 +83,7 @@ if len(unprocessed_message_set_string) != 0:
 			# "To" emails, parse out the *actual* email address
 			# (ignoring the "friendly name"), and *then* match.
 			#
-			message_match = re.search(r'[\s,<]' + gmail_user_part + '\+[^@]+\@' + gmail_domain_part + '[>,\s]', raw_ToField_header[1].decode())
+			message_match = re.search(r'[\s,<]' + gmail_user_part + r'\+[^@]+\@' + gmail_domain_part + r'[>,\s]', raw_ToField_header[1].decode())
 
 			# Add matched messages to messages_to_process
 			#
