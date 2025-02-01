@@ -1,7 +1,6 @@
 name: Pull new issues from Gmail
 
 on:
-  push:
   schedule:
     - cron: '30 */1 * * *'
 
