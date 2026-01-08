@@ -14,5 +14,5 @@ requests==2.32.4
 six==1.17.0
 soupsieve==2.6
 typing-extensions==4.12.2
-urllib3==2.6.0
+urllib3==2.6.3
 wrapt==1.17.2
