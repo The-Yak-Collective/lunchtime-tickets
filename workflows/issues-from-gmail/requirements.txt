@@ -10,7 +10,7 @@ pycparser==2.22
 pygithub==2.5.0
 pyjwt[crypto]==2.10.1
 pynacl==1.6.2
-requests==2.32.4
+requests==2.33.0
 six==1.17.0
 soupsieve==2.6
 typing-extensions==4.12.2
