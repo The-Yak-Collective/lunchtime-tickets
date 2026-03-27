@@ -8,7 +8,7 @@ idna==3.10
 markdownify==0.14.1
 pycparser==2.22
 pygithub==2.5.0
-pyjwt[crypto]==2.10.1
+pyjwt[crypto]==2.12.0
 pynacl==1.6.2
 requests==2.33.0
 six==1.17.0
