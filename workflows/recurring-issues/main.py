@@ -28,15 +28,7 @@ for issue in closed_issues:
 		try:
 			# Extract frequency/current/next
 			#
-			# FIXME: we need to add code to detect whether
-			# UNIX (\n) or Windows (\r\n) line endings are
-			# being used, and then adapt the split() here
-			# and the if-block that follows accordingly, as
-			# I'm not 100% sure that the \r\n -> \n
-			# transition isn't an artifact of different
-			# clients being used.
-			#
-			body_array = issue.body.split("\n",3)
+			body_array = issue.body.replace("\r\n", "\n").split("\n", 3)
 			frequency = int(body_array[0].split(": ")[1])
 			current = datetime.strptime(body_array[1].split(": ")[1], "%Y-%m-%d")
 			next = datetime.strptime(body_array[2].split(": ")[1], "%Y-%m-%d")
