@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: Setup Python 3
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v7
+        with:
+          python-version: '< 3.15'
       - name: Install required packages
         run: python3 -m pip install -r workflows/issues-from-gmail/requirements.txt
       - name: Pull new issues from Gmail
